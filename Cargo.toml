@@ -1,0 +1,17 @@
+[package]
+name = "alitse"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1.0", features = ["full"] }
+axum = { version = "0.4.4", features = ["ws"]}
+serde = { version = "1.0", features = ["derive"]}
+tower = { version = "0.4", features = ["full"] }
+sqlx = { version = "0.5.10", features = ["runtime-tokio-rustls", "postgres"] }
+
+clap = { version = "3.0.14", features = ["derive", "env"]}
+
+dotenv = "0.15"
