@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3.9'
+services:
+  postgres-dev:
+    image: postgres:14
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db
+
+  postgres-test:
+    image: postgres:14
+    command:
+      [ 'postgres', '-p', '5431' ]
+    ports:
+      - '5431:5431'
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db
