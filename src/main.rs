@@ -1,7 +1,5 @@
-use crate::api::serve;
 use anyhow::Context;
 use clap::Parser;
-use config::Config;
 use dotenv::dotenv;
 use sqlx::postgres::PgPoolOptions;
 
@@ -12,14 +10,14 @@ mod config;
 async fn main() -> anyhow::Result<()> {
     dotenv().ok();
 
-    let config = Config::parse();
+    let config = config::Config::parse();
     let db = PgPoolOptions::new()
         .max_connections(50)
         .connect(&config.database_url)
         .await
         .context("could not connect to database_url")?;
 
-    serve(config, db).await?;
+    api::serve(config, db).await?;
 
     Ok(())
 }

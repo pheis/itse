@@ -1,0 +1,2 @@
+#!/bin/bash
+psql -d db -U user -h localhost -p 5432
