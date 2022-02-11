@@ -3,30 +3,36 @@ name = "itse"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 # Async runtime
 tokio = { version = "1.0", features = ["full"] }
 # web framework
-axum = { version = "0.4.4", features = ["ws"]}
+axum = { version = "0.4.4", features = ["ws", "headers"]}
 tower = { version = "0.4", features = ["full"] }
-# Parsing json
+# Parsing
 serde = { version = "1.0", features = ["derive"]}
+
 # sql
 sqlx = { version = "0.5.10", features = ["runtime-tokio-rustls", "postgres", "uuid"] }
-uuid = { version = "0.8", features = ["serde"] }
 
 # args and env vars
 clap = { version = "3.0.14", features = ["derive", "env"]}
 
-# Error handling utilities
+# Error handling helpers
 anyhow = "1.0"
 thiserror = "1.0"
 
 # Password hashing
 argon2 = "0.3.3"
 
+# JWT
+jsonwebtoken = "8"
+
 # Utilities
+uuid = { version = "0.8", features = ["serde"] }
 rand = "0.8.4"
 dotenv = "0.15"
+chrono = { version = "0.4", features = ["serde"] }
+
+# https://areweasyncyet.rs/ async traits are not yet stabilized
+async-trait =   "0.1.52"

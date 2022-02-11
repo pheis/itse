@@ -1,0 +1,18 @@
+#!/bin/bash
+# openssl ecparam -genkey -noout -name prime256v1 \
+#     | openssl pkcs8 -topk8 -nocrypt -out ec-private.pem
+
+
+# openssl ec -in ec-private.pem -pubout -out ec-public.pem
+
+# openssl pkcs8 -topk8 -inform PEM -outform DER -in ec-private.pem -out ec-private.der -nocrypt
+# openssl ec -in ec-private.pem -outform DER -pubout -out ec-public.der
+
+
+# base64 -> RFC 4648
+
+# cat ec-private.der | base64
+# cat ec-public.der | base64
+
+/opt/homebrew/opt/openssl@3/bin/openssl genpkey -algorithm ED25519 -outform PEM -out private-key.pem
+/opt/homebrew/opt/openssl@3/bin/openssl pkey -in private-key.pem -pubout > public-key.pem

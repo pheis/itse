@@ -9,7 +9,9 @@ use crate::api::error::{Error, ResultExt};
 use crate::api::{ApiContext, Result};
 
 pub fn router() -> Router {
-    Router::new().route("/api/users", post(create_user))
+    Router::new()
+        .route("/api/users", post(create_user))
+        .route("/api/users/login", post(login_user))
 }
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -57,6 +59,35 @@ async fn create_user(
         username,
         user_id,
     }))
+}
+
+#[derive(serde::Serialize, serde::Deserialize)]
+enum LoginUser {
+    Username { username: String, password: String },
+    Email { email: String, password: String },
+}
+
+async fn login_user(ctx: Extension<ApiContext>, Json(creds): Json<LoginUser>) -> Result<()> {
+    let query = match &creds {
+        LoginUser::Username { username, .. } => sqlx::query_scalar!(
+            r#"select (password_hash) from "user" where username=$1"#,
+            username,
+        ),
+        LoginUser::Email { email, .. } => sqlx::query_scalar!(
+            r#"select (password_hash) from "user" where email=$1"#,
+            email,
+        ),
+    };
+
+    let password_hash = query.fetch_one(&ctx.db).await?;
+
+    let password = match creds {
+        LoginUser::Username { password, .. } | LoginUser::Email { password, .. } => password,
+    };
+
+    verify_password(password, password_hash).await?;
+
+    Ok(())
 }
 
 async fn hash_password(password: String) -> Result<String> {

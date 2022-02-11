@@ -1,4 +1,3 @@
-use axum::body::{Bytes, Full, HttpBody};
 use axum::http::header::WWW_AUTHENTICATE;
 use axum::http::{HeaderMap, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
@@ -12,9 +11,6 @@ pub enum Error {
     #[error("authentication required")]
     Unauthorized,
 
-    #[error("request path not found")]
-    NotFound,
-
     #[error("error in the request body")]
     Conflict {
         errors: HashMap<Cow<'static, str>, Vec<Cow<'static, str>>>,
@@ -25,6 +21,9 @@ pub enum Error {
 
     #[error("an internal server error occurred")]
     Anyhow(#[from] anyhow::Error),
+
+    #[error("an internal error that is fine")]
+    Recoverable,
 }
 
 impl Error {
@@ -48,9 +47,8 @@ impl Error {
     fn status_code(&self) -> StatusCode {
         match self {
             Self::Unauthorized => StatusCode::UNAUTHORIZED,
-            Self::NotFound => StatusCode::NOT_FOUND,
             Self::Conflict { .. } => StatusCode::CONFLICT,
-            Self::Db(_) | Self::Anyhow(_) => StatusCode::INTERNAL_SERVER_ERROR,
+            Self::Db(_) | Self::Anyhow(_) | Self::Recoverable => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
 }
